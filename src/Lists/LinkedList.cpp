@@ -4,7 +4,7 @@
 
 
 #include "LinkedListNode.h"
-#include "LinkedList.h"
+#include "Lists/LinkedList.h"
 #include <iostream>
 #include <string>
 
@@ -43,16 +43,24 @@ LinkedList * LinkedList::findPrev(const std::string &Data) {
 }
 
 LinkedList * LinkedList::insert(const std::string &prevData, const std::string &Data) {
-    if (!LinkedList::find(prevData)->getStatus()) return this;
+    LinkedListNode * memoNode = this->currNode;
+    if (!LinkedList::find(prevData)->getStatus()){
+        this->currNode = memoNode;
+        return this;
+    }
 
     auto * newNode = new LinkedListNode(Data, this->currNode->next);
     this->currNode->next = newNode;
-    this->status = false;
+    this->status = true;
     return this;
 }
 
 LinkedList * LinkedList::remove(const std::string &Data) {
-    if (!LinkedList::findPrev(Data)->getStatus()) return this;
+    LinkedListNode * memoNode = this->currNode;
+    if (!LinkedList::findPrev(Data)->getStatus()){
+        this->currNode = memoNode;
+        return this;
+    }
     LinkedListNode * memoRemovedNode = this->currNode->next;
     this->currNode->next = this->currNode->next->next;
 
@@ -69,7 +77,6 @@ LinkedList * LinkedList::printList() {
 
     return this;
 }
-
 
 LinkedList::~LinkedList(){
     this->currNode = this->HEAD;

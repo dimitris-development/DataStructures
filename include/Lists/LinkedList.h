@@ -19,9 +19,10 @@ public:
     LinkedList(){
         this->HEAD = new LinkedListNode("HEAD", nullptr);
         this->currNode = this->HEAD;
+        this->status = false;
     }
 
-    bool getStatus() {
+    bool getStatus() const {
         return this->status;
     }
 
