@@ -2,16 +2,14 @@
 // Created by dimitrios on 20/3/21.
 //
 
-
-#include "LinkedListNode.h"
-#include "Lists/LinkedList.h"
+#include "Lists/NodeFactory.h"
 #include <iostream>
-#include <string>
 
-LinkedList * LinkedList::find(const std::string &Data) {
-    LinkedListNode * memoCurrNode = this->currNode;
+template <typename T>
+LinkedList<T> * LinkedList<T>::find(const T& Data) {
+    Node<T> * memoCurrNode = this->currNode;
     this->currNode = this->HEAD;
-    while(this->currNode->data != Data) {
+    while(this->currNode->Data != Data) {
         if (this->currNode->next == nullptr) {
             this->status = false;
             this->currNode = memoCurrNode;
@@ -25,10 +23,11 @@ LinkedList * LinkedList::find(const std::string &Data) {
     return this;
 }
 
-LinkedList * LinkedList::findPrev(const std::string &Data) {
-    LinkedListNode * memoCurrNode = this->currNode;
+template <typename T>
+LinkedList<T> * LinkedList<T>::findPrev(const T& Data) {
+    Node<T> * memoCurrNode = this->currNode;
     this->currNode = this->HEAD;
-    while (this->currNode->next->data != Data) {
+    while (this->currNode->next->Data != Data) {
         if (this->currNode->next->next == nullptr) {
             this->status = false;
             this->currNode = memoCurrNode;
@@ -42,46 +41,50 @@ LinkedList * LinkedList::findPrev(const std::string &Data) {
     return this;
 }
 
-LinkedList * LinkedList::insert(const std::string &prevData, const std::string &Data) {
-    LinkedListNode * memoNode = this->currNode;
+template <typename T>
+LinkedList<T> * LinkedList<T>::insert(const T& prevData, const T& Data) {
+    Node<T> * memoNode = this->currNode;
     if (!LinkedList::find(prevData)->getStatus()){
         this->currNode = memoNode;
         return this;
     }
 
-    auto * newNode = new LinkedListNode(Data, this->currNode->next);
+    auto * newNode = NodeFactory<T>::NewSNode(Data, this->currNode->next);
     this->currNode->next = newNode;
     this->status = true;
     return this;
 }
 
-LinkedList * LinkedList::remove(const std::string &Data) {
-    LinkedListNode * memoNode = this->currNode;
+template <typename T>
+LinkedList<T> * LinkedList<T>::remove(const T& Data) {
+    Node<T> * memoNode = this->currNode;
     if (!LinkedList::findPrev(Data)->getStatus()){
         this->currNode = memoNode;
         return this;
     }
-    LinkedListNode * memoRemovedNode = this->currNode->next;
+    Node<T> * memoRemovedNode = this->currNode->next;
     this->currNode->next = this->currNode->next->next;
 
     delete memoRemovedNode;
     return this;
 }
 
-LinkedList * LinkedList::printList() {
-    this->currNode = this->HEAD->next;
+template <typename T>
+LinkedList<T> * LinkedList<T>::printList() {
+    this->currNode = this->HEAD;
     while(this->currNode != nullptr) {
-        std::cout << this->currNode->data << std::endl;
+        std::cout << this->currNode->Data << std::endl;
         this->currNode = this->currNode->next;
     }
 
     return this;
 }
 
-LinkedList::~LinkedList(){
+template <typename T>
+LinkedList<T>::~LinkedList(){
     this->currNode = this->HEAD;
     while (this->currNode != nullptr) {
-        LinkedListNode * memoCurrNode = this->currNode;
+        Node<T> * memoCurrNode = this->currNode;
         delete memoCurrNode;
         this->currNode = this->currNode->next;
     }

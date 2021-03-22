@@ -33,19 +33,19 @@ macro(package_add_test_with_libraries TESTNAME FILES LIBRARIES TEST_WORKING_DIRE
     set_target_properties(${TESTNAME} PROPERTIES FOLDER tests)
 endmacro()
 
-include_directories(include)
-include_directories(include/Lists/)
-include_directories(include/Lists/Nodes)
+include_directories(include
+                    src)
 
 add_library(datastructures STATIC
-        src/Lists/LinkedList.cpp
+        src/Lists/LinkedList_impl.h
         include/Lists/LinkedList.h
-        include/Lists/Nodes/LinkedListNode.h
-        include/Lists/DoublyLinkedList.h
-        include/Lists/Nodes/DoublyLinkedListNode.h
-        src/Lists/DoublyLinkedList.cpp
+        src/Lists/DoublyLinkedList_impl.h
         include/Lists/CircularLinkedList.h
-        src/Lists/CircularLinkedList.cpp)
+        src/Lists/CircularLinkedList_impl.h
+        include/Lists/Node.h
+        include/Lists/NodeFactory.h)
+
+set_target_properties(datastructures PROPERTIES LINKER_LANGUAGE C)
 
 add_executable(main main.cpp)
 

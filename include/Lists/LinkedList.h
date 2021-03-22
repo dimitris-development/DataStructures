@@ -5,40 +5,39 @@
 #ifndef DATASTRUCTURES_LINKEDLIST_H
 #define DATASTRUCTURES_LINKEDLIST_H
 
+#include "Lists/NodeFactory.h"
 
-#include "LinkedListNode.h"
-#include <string>
-
+template <class T>
 class LinkedList {
 private:
     bool status;
 public:
-    LinkedListNode * currNode;
-    LinkedListNode * HEAD;
+    Node<T> * currNode;
+    Node<T> * HEAD;
 
-    LinkedList(){
-        this->HEAD = new LinkedListNode("HEAD", nullptr);
-        this->currNode = this->HEAD;
-        this->status = false;
-    }
+    explicit LinkedList(T HEAD) :
+        HEAD(NodeFactory<T>::NewSNode(HEAD, nullptr)),
+        currNode(this->HEAD),
+        status(false){}
 
     bool getStatus() const {
         return this->status;
     }
 
-    LinkedList * find(const std::string& Data);
+    LinkedList<T> * find(const T& Data);
 
-    LinkedList * findPrev(const std::string& Data);
+    LinkedList<T> * findPrev(const T& Data);
 
-    LinkedList * insert(const std::string& prevData, const std::string& Data);
+    LinkedList<T> * insert(const T& prevData, const T& Data);
 
-    LinkedList * remove(const std::string& Data);
+    LinkedList<T> * remove(const T& Data);
 
-    LinkedList * printList();
+    LinkedList<T> * printList();
 
     ~LinkedList();
 
 };
 
+#include "Lists/LinkedList_impl.h"
 
 #endif //DATASTRUCTURES_LINKEDLIST_H

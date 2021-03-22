@@ -2,13 +2,13 @@
 // Created by dimitrios on 20/3/21.
 //
 
-#include "Lists/DoublyLinkedList.h"
-#include <string>
+#include "Lists/NodeFactory.h"
 #include <iostream>
 
-DoublyLinkedList * DoublyLinkedList::find(const std::string &Data) {
+template <typename T>
+DoublyLinkedList<T> * DoublyLinkedList<T>::find(const T &Data) {
     this->currNode = this->HEAD;
-    while (this->currNode->data != Data) {
+    while (this->currNode->Data != Data) {
         if (this->currNode->next == nullptr) {
             this->status = false;
             return this;
@@ -21,14 +21,15 @@ DoublyLinkedList * DoublyLinkedList::find(const std::string &Data) {
     return this;
 }
 
-DoublyLinkedList * DoublyLinkedList::insert(const std::string &prevData, const std::string &Data) {
-    DoublyLinkedListNode * memoNode = this->currNode;
+template <typename T>
+DoublyLinkedList<T> * DoublyLinkedList<T>::insert(const T& prevData, const T& Data) {
+    Node<T> memoNode = this->currNode;
     if (!find(prevData)->getStatus()) {
         this->currNode = memoNode;
         return this;
     }
 
-    auto * newNode = new DoublyLinkedListNode(Data, this->currNode, this->currNode->next);
+    auto * newNode = NodeFactory<T>::NewDNode(Data, this->currNode, this->currNode->next);
 
     if (this->currNode->next != nullptr) {
         this->currNode->next->prev = newNode;
@@ -39,8 +40,9 @@ DoublyLinkedList * DoublyLinkedList::insert(const std::string &prevData, const s
     return this;
 }
 
-DoublyLinkedList * DoublyLinkedList::remove(const std::string &Data){
-    DoublyLinkedListNode * memoNode = this->currNode;
+template <typename T>
+DoublyLinkedList<T> * DoublyLinkedList<T>::remove(const T& Data){
+    Node<T> memoNode = this->currNode;
     if (!DoublyLinkedList::find(Data)->getStatus()) {
         this->currNode = memoNode;
         return this;
@@ -52,7 +54,7 @@ DoublyLinkedList * DoublyLinkedList::remove(const std::string &Data){
 
     this->currNode->prev->next = this->currNode->next;
 
-    DoublyLinkedListNode * removedNode = this->currNode;
+    Node<T> removedNode = this->currNode;
     this->currNode = this->currNode->next;
 
     delete removedNode;
@@ -60,20 +62,21 @@ DoublyLinkedList * DoublyLinkedList::remove(const std::string &Data){
     return this;
 }
 
-DoublyLinkedList * DoublyLinkedList::printList() {
+template <typename T>
+DoublyLinkedList<T> * DoublyLinkedList<T>::printList() {
     this->currNode = this->HEAD->next;
     while(this->currNode != nullptr) {
-        std::cout << this->currNode->data << std::endl;
+        std::cout << this->currNode->Data << std::endl;
         this->currNode = this->currNode->next;
     }
 
     return this;
 }
-
-DoublyLinkedList::~DoublyLinkedList(){
+template <typename T>
+DoublyLinkedList<T>::~DoublyLinkedList(){
     this->currNode = this->HEAD;
     while (this->currNode != nullptr) {
-        DoublyLinkedListNode * memoCurrNode = this->currNode;
+        Node<T> memoCurrNode = this->currNode;
         delete memoCurrNode;
         this->currNode = this->currNode->next;
     }

@@ -2,15 +2,14 @@
 // Created by dimitrios on 20/3/21.
 //
 
-#include "Lists/CircularLinkedList.h"
-#include "DoublyLinkedListNode.h"
-#include <string>
+#include "Lists/NodeFactory.h"
 #include <iostream>
 
-CircularLinkedList * CircularLinkedList::find(const std::string& Data) {
-    DoublyLinkedListNode * memoNode = this->currNode;
+template <typename T>
+CircularLinkedList<T> * CircularLinkedList<T>::find(const T& Data) {
+    Node<T> * memoNode = this->currNode;
     this->currNode = this->HEAD;
-    while (this->currNode->data != Data) {
+    while (this->currNode->Data != Data) {
         this->currNode = this->currNode->next;
         if (this->currNode == this->HEAD) {
             this->currNode = memoNode;
@@ -22,14 +21,15 @@ CircularLinkedList * CircularLinkedList::find(const std::string& Data) {
     return this;
 }
 
-CircularLinkedList * CircularLinkedList::insert(const std::string &prevData, const std::string &Data) {
-    DoublyLinkedListNode * memoNode = this->currNode;
+template <typename T>
+CircularLinkedList<T> * CircularLinkedList<T>::insert(const T &prevData, const T &Data) {
+    Node<T> * memoNode = this->currNode;
     if (!find(prevData)->getStatus()) {
         this->currNode = memoNode;
         return this;
     }
 
-    auto * newNode = new DoublyLinkedListNode(Data, this->currNode, this->currNode->next);
+    auto * newNode = NodeFactory<T>::NewDNode(Data, this->currNode, this->currNode->next);
 
     if (this->currNode->next != this->HEAD) {
         this->currNode->next->prev = newNode;
@@ -40,8 +40,9 @@ CircularLinkedList * CircularLinkedList::insert(const std::string &prevData, con
     return this;
 }
 
-CircularLinkedList * CircularLinkedList::remove(const std::string &Data){
-    DoublyLinkedListNode * memoNode = this->currNode;
+template <typename T>
+CircularLinkedList<T> * CircularLinkedList<T>::remove(const T &Data){
+    Node<T> * memoNode = this->currNode;
     if (!CircularLinkedList::find(Data)->getStatus()) {
         this->currNode = memoNode;
         return this;
@@ -53,7 +54,7 @@ CircularLinkedList * CircularLinkedList::remove(const std::string &Data){
 
     this->currNode->prev->next = this->currNode->next;
 
-    DoublyLinkedListNode * removedNode = this->currNode;
+    Node<T> * removedNode = this->currNode;
     this->currNode = this->currNode->next;
 
     delete removedNode;
@@ -61,20 +62,22 @@ CircularLinkedList * CircularLinkedList::remove(const std::string &Data){
     return this;
 }
 
-CircularLinkedList * CircularLinkedList::printList() {
+template <typename T>
+CircularLinkedList<T> * CircularLinkedList<T>::printList() {
     this->currNode = this->HEAD->next;
     while(this->currNode != this->HEAD) {
-        std::cout << this->currNode->data << std::endl;
+        std::cout << this->currNode->Data << std::endl;
         this->currNode = this->currNode->next;
     }
 
     return this;
 }
 
-CircularLinkedList::~CircularLinkedList(){
+template <typename T>
+CircularLinkedList<T>::~CircularLinkedList(){
     this->currNode = this->HEAD->next;
     while (this->currNode != this->HEAD) {
-        DoublyLinkedListNode * memoCurrNode = this->currNode;
+        Node<T> * memoCurrNode = this->currNode;
         delete memoCurrNode;
         this->currNode = this->currNode->next;
     }

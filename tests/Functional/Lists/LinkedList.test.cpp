@@ -1,6 +1,5 @@
 #include "gtest/gtest.h"
-#include "LinkedList.h"
-#include <string>
+#include "Lists/LinkedList.h"
 
 class LinkedListTest : public ::testing::Test {
 private:
@@ -10,15 +9,15 @@ protected:
         //Create a dataset to test against
         for (int i = 0; i < this->Data_size; i++){
             if (i == 0) {
-                Data->insert("HEAD", std::to_string(i));
+                Data->insert(-1,i);
                 continue;
             }
-            Data->insert(std::to_string(i-1), std::to_string(i));
+            Data->insert(i-1, i);
         }
     }
 
-    LinkedList * Data = new LinkedList();
-    std::string randomDataFromNode = to_string(random() % this->Data_size);
+    LinkedList<int> * Data = new LinkedList<int>(-1);
+    int randomDataFromNode = (int)random() % this->Data_size;
 };
 
 TEST_F(LinkedListTest, TestInsertStatus) {
@@ -30,8 +29,6 @@ TEST_F(LinkedListTest, TestExpectedDataset) {
     Data->printList();
     std::string PrintedDataset = testing::internal::GetCapturedStdout();
 
-    ASSERT_EQ(PrintedDataset.find("HEAD"),std::string::npos);
-
     for (int i = 0; i < 100; i++) {
         ASSERT_NE(PrintedDataset.find(std::to_string(i)), std::string::npos);
     }
@@ -39,5 +36,6 @@ TEST_F(LinkedListTest, TestExpectedDataset) {
 
 TEST_F(LinkedListTest, TestMemoization) {
     Data->find(randomDataFromNode);
-    ASSERT_EQ(Data->currNode->data, randomDataFromNode);
+    ASSERT_EQ(Data->currNode->Data, randomDataFromNode);
+
 }
